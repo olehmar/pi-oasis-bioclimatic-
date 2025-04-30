@@ -2809,12 +2809,82 @@ function start() {
   if (loaded) {
     return;
   }
+
   loaded = true;
 
   if (theModel) {
     // theModel.visible = true;
     initMorphModel(theModel);
   }
+
+  const validForm = jQuery(`
+    <div id="password-popup">
+  <div class="popup-content">
+    <h2>ENTER PASSWORD</h2>
+    <input type="password" id="password-input" placeholder="Password" />
+    <button onclick="validatePassword()">Log in</button>
+    <p id="error-message"></p>
+  </div>
+</div>
+
+<style>
+  #password-popup {
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .popup-content {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  }
+
+  #password-input {
+    padding: 10px;
+    width: 200px;
+    margin: 10px 0;
+  }
+
+  #error-message {
+    color: red;
+    font-size: 14px;
+    height: 20px;
+  }
+</style>
+
+<script>
+  const correctPassword = "pipergolaconfiguratorpassword"; // PASSWORD
+
+  function validatePassword() {
+    const input = document.getElementById("password-input").value;
+    const errorMessage = document.getElementById("error-message");
+
+    if (input === correctPassword) {
+      document.getElementById("password-popup").style.display = "none";
+    } else {
+      errorMessage.textContent = "Uncorrect password. Try again.";
+    }
+  }
+
+  document.getElementById("password-input").addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      validatePassword();
+    }
+  });
+</script>
+    `);
+
+  jQuery("body").append(validForm);
 
   startSettings();
 }
@@ -5096,9 +5166,9 @@ class PergolaObject {
     const { point_post_length } = this.getPostPoints();
 
     const cornerAndBeamPoint = [
-      ...this.addOffset([FR_point], "z", testVar),
+      ...this.addOffset([FR_point], "z", -0.07),
       ...this.addOffset(point_post_length, "z", 0),
-      ...this.addOffset([RR_point], "z", 0.1),
+      ...this.addOffset([RR_point], "z", 0.16), //0.18
     ];
 
     for (let i = 0; i < points.length; i++) {
